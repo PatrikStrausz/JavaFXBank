@@ -1,23 +1,26 @@
 package sample;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import org.apache.commons.io.IOUtils;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
 import org.json.JSONObject;
-import org.json.simple.JSONValue;
 
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.URI;
+
 import java.net.URL;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
+
 
 public class Controller {
     @FXML
@@ -26,37 +29,69 @@ public class Controller {
     public Label lblError;
     public TextField login;
 
-    public void initialize(){
+    public void initialize() {
         btnLogin.setStyle("-fx-background-color: #33C2FF");
+        btnLogin.setDisable(true);
     }
-
 
 
     public void login() throws IOException, InterruptedException {
 
-        URL url = new URL ("http://localhost:8080/login");
-        HttpURLConnection con = (HttpURLConnection)url.openConnection();
+        URL url = new URL("http://localhost:8080/login");
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("POST");
         con.setRequestProperty("Content-Type", "application/json; utf-8");
         con.setRequestProperty("Accept", "application/json");
         con.setDoOutput(true);
-        String jsonInputString = "{\"login\": " +login.getText()+ ", password: "+ password.getText()+"}";
+        String jsonInputString = "{\"login\": " + login.getText() + ", password: " + password.getText() + "}";
 
-        try(OutputStream os = con.getOutputStream()) {
+        try (OutputStream os = con.getOutputStream()) {
             byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
             os.write(input, 0, input.length);
 
         }
+        int statusCode = con.getResponseCode();
 
-        InputStream in = new BufferedInputStream(con.getInputStream());
-        String result = IOUtils.toString(in, StandardCharsets.UTF_8);
-        System.out.println(result + " sasasaassa");
+        InputStream is = null;
 
-        in.close();
+        if (statusCode >= 200 && statusCode < 400) {
+            is = con.getInputStream();
+            System.out.println(is.toString());
+        } else {
+            is = con.getErrorStream();
+
+            BufferedReader streamReader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+            StringBuilder responseStrBuilder = new StringBuilder();
+
+            String inputStr;
+            while ((inputStr = streamReader.readLine()) != null)
+                responseStrBuilder.append(inputStr);
+            new JSONObject(responseStrBuilder.toString());
+            System.out.println(responseStrBuilder.toString());
+            String ss =responseStrBuilder.toString().replaceAll("\\p{P}","")
+                    .replace("error", "");
+            lblError.setText(ss);
+            lblError.setVisible(true);
+            login.setText(" ");
+            password.setText("");
+            btnLogin.setDisable(true);
+
+
+
+        }
+
         con.disconnect();
-        
+
     }
 
+    public void handleKeyReleased() {
+        String loginText = login.getText();
+        String passwordText = password.getText();
+        boolean disableBtn = loginText.isEmpty() || loginText.trim().isEmpty()
+                && passwordText.isEmpty() || passwordText.trim().isEmpty();
+       btnLogin.setDisable(disableBtn);
+
+    }
 
 
 }

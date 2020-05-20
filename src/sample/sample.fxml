@@ -16,15 +16,18 @@
       <Pane prefHeight="300.0" prefWidth="250.0" GridPane.rowIndex="1">
          <children>
             <Button fx:id="btnLogin" layoutX="27.0" layoutY="220" mnemonicParsing="false" onAction="#login" prefHeight="25.0" prefWidth="198.0" text="Log in" />
-            <PasswordField fx:id="password" layoutX="27.0" layoutY="170" prefWidth="198.0" />
+            <PasswordField fx:id="password" layoutX="27.0" onKeyReleased="#handleKeyReleased" layoutY="170" prefWidth="198.0" />
             <Label layoutX="27.0" layoutY="155" text="Password:" />
             <Label layoutX="27.0" layoutY="89" text="Login:" />
-            <TextField fx:id="login" layoutX="27.0" layoutY="105" prefWidth="198.0" />
+            <TextField fx:id="login" layoutX="27.0" layoutY="105" onKeyReleased="#handleKeyReleased" prefWidth="198.0" />
             <Label layoutX="60" layoutY="30" text="Member login">
                <font>
                   <Font name="Bell MT" size="20.0" />
                </font></Label>
-            <Label fx:id="lblError" layoutX="27" layoutY="65" prefWidth="200" visible="false" />
+            <Label fx:id="lblError" alignment="CENTER" contentDisplay="CENTER" layoutX="27" layoutY="62" prefWidth="200" textFill="#f50b0b" visible="false">
+               <font>
+                  <Font size="15.0" />
+               </font></Label>
          </children>
       </Pane>
    </children>
