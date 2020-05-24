@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="500.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.NewWindow">
+   <children>
+      <Pane fx:id="infoPane" prefHeight="66.0" prefWidth="900.0">
+         <children>
+            <Button fx:id="btnLogout" layoutX="822.0" layoutY="21.0" mnemonicParsing="false" onAction="#logout" prefHeight="25.0" prefWidth="56.0" text="Logout" />
+            <Button layoutX="702.0" layoutY="21.0" mnemonicParsing="false" onAction="#openChangePassword" prefHeight="25.0" prefWidth="111.0" text="Change password" />
+            <Button layoutX="638.0" layoutY="21.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="56.0" text="Log" />
+            <Label fx:id="lblName" layoutX="30.0" layoutY="25.0" />
+         </children></Pane>
+   </children>
+</AnchorPane>
