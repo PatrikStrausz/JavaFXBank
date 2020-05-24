@@ -1,17 +1,16 @@
 package sample;
 
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.BooleanBinding;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.paint.Color;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -23,19 +22,56 @@ import java.nio.charset.StandardCharsets;
 
 
 public class Controller {
-    @FXML
+
     public Button btnLogin;
     public PasswordField password;
     public Label lblError;
     public TextField login;
 
-    public void initialize() {
-        btnLogin.setStyle("-fx-background-color: #33C2FF");
-        btnLogin.setDisable(true);
+    public String token;
+    public String lname;
+    public String fname;
+
+    public String getLoginss() {
+        return loginss;
     }
 
+    public void setLoginss(String loginss) {
+        this.loginss = loginss;
+    }
 
-    public void login() throws IOException, InterruptedException {
+    public String loginss;
+
+public void initialize(){
+    btnLogin.setStyle("-fx-background-color: #33C2FF");
+    btnLogin.setDisable(true);
+}
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getLname() {
+        return lname;
+    }
+
+    public void setLname(String lname) {
+        this.lname = lname;
+    }
+
+    public String getFname() {
+        return fname;
+    }
+
+    public void setFname(String fname) {
+        this.fname = fname;
+    }
+
+    public void login() throws IOException {
 
         URL url = new URL("http://localhost:8080/login");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -57,6 +93,30 @@ public class Controller {
         if (statusCode >= 200 && statusCode < 400) {
             is = con.getInputStream();
             System.out.println(is.toString());
+            BufferedReader streamReader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+            StringBuilder responseStrBuilder = new StringBuilder();
+
+            String inputStr;
+            while ((inputStr = streamReader.readLine()) != null)
+                responseStrBuilder.append(inputStr);
+            JSONObject temp = new JSONObject(responseStrBuilder.toString());
+
+
+            setLname(temp.getString("lname"));
+            setToken(temp.getString("token"));
+            setFname(temp.getString("fname"));
+            setLoginss(temp.getString("login"));
+
+
+            System.out.println(responseStrBuilder.toString());
+
+
+            openNewWindow();
+            closeLoginWindow();
+        
+
+
+
         } else {
             is = con.getErrorStream();
 
@@ -68,7 +128,7 @@ public class Controller {
                 responseStrBuilder.append(inputStr);
             new JSONObject(responseStrBuilder.toString());
             System.out.println(responseStrBuilder.toString());
-            String ss =responseStrBuilder.toString().replaceAll("\\p{P}","")
+            String ss = responseStrBuilder.toString().replaceAll("\\p{P}", "")
                     .replace("error", "");
             lblError.setText(ss);
             lblError.setVisible(true);
@@ -76,21 +136,51 @@ public class Controller {
             password.setText("");
             btnLogin.setDisable(true);
 
-
-
         }
 
         con.disconnect();
 
     }
 
+
+
     public void handleKeyReleased() {
         String loginText = login.getText();
         String passwordText = password.getText();
         boolean disableBtn = loginText.isEmpty() || loginText.trim().isEmpty()
                 && passwordText.isEmpty() || passwordText.trim().isEmpty();
-       btnLogin.setDisable(disableBtn);
+        btnLogin.setDisable(disableBtn);
 
+    }
+
+    public void openNewWindow() {
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("newWindow.fxml"));
+            Parent root1 = loader.load();
+
+            NewWindow newWindow = loader.getController();
+            newWindow.setName(getFname(), getLname());
+            newWindow.setToken(getToken());
+            newWindow.setLogin(getLoginss());
+
+            Stage stage = new Stage();
+            Scene scene = new Scene(root1, 900, 500);
+            stage.resizableProperty().setValue(Boolean.FALSE);
+            stage.initStyle(StageStyle.UTILITY);
+
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    public void closeLoginWindow() {
+        Stage stage = (Stage) btnLogin.getScene().getWindow();
+        stage.close();
     }
 
 
