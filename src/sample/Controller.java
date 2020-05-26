@@ -42,10 +42,10 @@ public class Controller {
 
     public String loginss;
 
-public void initialize(){
-    btnLogin.setStyle("-fx-background-color: #33C2FF");
-    btnLogin.setDisable(true);
-}
+    public void initialize() {
+        btnLogin.setStyle("-fx-background-color: #33C2FF");
+        btnLogin.setDisable(true);
+    }
 
     public String getToken() {
         return token;
@@ -113,8 +113,6 @@ public void initialize(){
 
             openNewWindow();
             closeLoginWindow();
-        
-
 
 
         } else {
@@ -143,7 +141,6 @@ public void initialize(){
     }
 
 
-
     public void handleKeyReleased() {
         String loginText = login.getText();
         String passwordText = password.getText();
@@ -163,6 +160,7 @@ public void initialize(){
             newWindow.setName(getFname(), getLname());
             newWindow.setToken(getToken());
             newWindow.setLogin(getLoginss());
+            newWindow.getMessages();
 
             Stage stage = new Stage();
             Scene scene = new Scene(root1, 900, 500);
@@ -175,7 +173,6 @@ public void initialize(){
             e.printStackTrace();
         }
     }
-
 
 
     public void closeLoginWindow() {

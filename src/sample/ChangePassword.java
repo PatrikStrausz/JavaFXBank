@@ -85,8 +85,9 @@ public class ChangePassword {
 
                     System.out.println(responseStrBuilder.toString());
 
+                    lblError.setStyle("-fx-text-fill: #009900");
+                    lblError.setText("Successfully changed");
 
-                    closeWindow();
 
 
                 } else {
@@ -119,8 +120,5 @@ public class ChangePassword {
 
     }
 
-    public void closeWindow() {
-        Stage stage = (Stage) btnAccept.getScene().getWindow();
-        stage.close();
-    }
+
 }
