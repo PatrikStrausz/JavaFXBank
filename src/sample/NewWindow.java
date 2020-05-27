@@ -23,6 +23,7 @@ import java.nio.charset.StandardCharsets;
 
 import java.util.ArrayList;
 
+import java.util.Collections;
 import java.util.List;
 
 
@@ -33,11 +34,14 @@ public class NewWindow {
     public String login;
     public Pane infoPane;
     public Button btnLogout;
-    public ListView lvLog;
+    public ListView<String>lvLog;
     public ListView<String> lvMessage;
     public TextArea areaMessage;
     public TextField tfTo;
     public Button btnSendMessage;
+    public Label lblMessageError;
+    public Button btnChangePassword;
+    public Button btnLog;
 
     public String getFullName() {
         return fullName;
@@ -72,7 +76,7 @@ public class NewWindow {
         lvLog.setVisible(false);
         infoPane.setStyle("-fx-background-color: #d9d9d9");
         btnSendMessage.setStyle("-fx-background-color: #33C2FF");
-
+        lblMessageError.setVisible(false);
     }
 
 
@@ -178,15 +182,10 @@ public class NewWindow {
                 List<String> listdata = new ArrayList<>();
 
                 for (int i = 0; i < response.length(); i++) {
-                    listdata.add(response.get(i).toString());
-
                     JSONObject temp = response.getJSONObject(i);
-
-                    String k = temp.getString("datetime") + "  " + temp.getString("type");
-
-                    lvLog.getItems().add(k);
+                        listdata.add(i, temp.getString("datetime") + "  " + temp.getString("type"));
                 }
-
+                lvLog.getItems().setAll(listdata);
 
             } else {
                 is = con.getErrorStream();
@@ -223,7 +222,6 @@ public class NewWindow {
             con.setRequestProperty("Authorization", getToken());
             String jsonInputString = "{\"login\": " + getLogin() + "}";
 
-
             try (OutputStream os = con.getOutputStream()) {
                 byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
                 os.write(input, 0, input.length);
@@ -240,11 +238,10 @@ public class NewWindow {
                 BufferedReader streamReader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
                 StringBuilder responseStrBuilder = new StringBuilder();
 
-
+                lblMessageError.setVisible(false);
                 String inputStr;
                 while ((inputStr = streamReader.readLine()) != null)
                     responseStrBuilder.append(inputStr);
-
 
                 JSONArray response = new JSONArray(responseStrBuilder.toString());
                 List<String> listdata = new ArrayList<>();
@@ -252,18 +249,13 @@ public class NewWindow {
                 System.out.println(responseStrBuilder.toString());
 
                 for (int i = 0; i < response.length(); i++) {
-                    listdata.add(response.get(i).toString());
-
                     JSONObject temp = response.getJSONObject(i);
-
-
-                    lvMessage.setFixedCellSize(50.0);
-
-                    lvMessage.getItems().add(temp.getString("from") + "                               " + temp.getString("time").substring(0, 6) + "\n" +
+                    listdata.add(i, temp.getString("from") + "                               " + temp.getString("time").substring(0, 6) + "\n" +
                             temp.getString("time").substring(6) + " " + temp.getString("message"));
 
+                    lvMessage.setFixedCellSize(50.0);
+                    lvMessage.getItems().setAll(listdata);
                 }
-
             } else {
                 is = con.getErrorStream();
 
@@ -280,15 +272,13 @@ public class NewWindow {
 
             con.disconnect();
 
-
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-
     }
 
-    public void sendMessage(){
+    public void sendMessage() {
         try {
             URL url = new URL("http://localhost:8080/message/new");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -297,20 +287,13 @@ public class NewWindow {
             con.setRequestProperty("Accept", "application/json");
             con.setDoOutput(true);
             con.setRequestProperty("Authorization", getToken());
-            String jsonInputString = "{\"from\": " +"\"" +getLogin()+"\"" +",\"to\": "+"\""+tfTo.getText()+"\""+", \"message\": "+"\""+areaMessage.getText()+"\"" +"}";
-
-            System.out.println(jsonInputString);
-            System.out.println(getLogin());
-            System.out.println(tfTo.getText());
-            System.out.println(areaMessage.getText());
+            String jsonInputString = "{\"from\": " + "\"" + getLogin() + "\"" + ",\"to\": " + "\"" + tfTo.getText() + "\"" + ", \"message\": " + "\"" + areaMessage.getText() + "\"" + "}";
 
             try (OutputStream os = con.getOutputStream()) {
                 byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
                 os.write(input, 0, input.length);
 
             }
-
-
             int statusCode = con.getResponseCode();
 
             InputStream is = null;
@@ -321,15 +304,13 @@ public class NewWindow {
                 BufferedReader streamReader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
                 StringBuilder responseStrBuilder = new StringBuilder();
 
-
                 String inputStr;
                 while ((inputStr = streamReader.readLine()) != null)
                     responseStrBuilder.append(inputStr);
 
-
+                getMessages();
 
                 System.out.println(responseStrBuilder.toString());
-
 
             } else {
                 is = con.getErrorStream();
@@ -342,11 +323,14 @@ public class NewWindow {
                     responseStrBuilder.append(inputStr);
                 new JSONObject(responseStrBuilder.toString());
                 System.out.println(responseStrBuilder.toString());
+                String ss = responseStrBuilder.toString().replaceAll("\\p{P}", "")
+                        .replace("error", "");
+                lblMessageError.setText(ss);
+                lblMessageError.setVisible(true);
 
             }
 
             con.disconnect();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -358,19 +342,16 @@ public class NewWindow {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
             Parent root1 = loader.load();
-
             Stage stage = new Stage();
             Scene scene = new Scene(root1, 250, 300);
             stage.resizableProperty().setValue(Boolean.FALSE);
             stage.initStyle(StageStyle.UTILITY);
-
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
 
     public void isLogVisible() {
         if (lvLog.isVisible()) {
@@ -379,7 +360,6 @@ public class NewWindow {
             lvLog.setVisible(true);
         }
     }
-
 
     public void closeWindow() {
         Stage stage = (Stage) btnLogout.getScene().getWindow();
