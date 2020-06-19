@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="500.0" prefWidth="895.0" xmlns="http://javafx.com/javafx/10.0.2-internal"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.AllMessages">
+   <children>
+      <Pagination fx:id="pagination" prefHeight="500.0" prefWidth="895.0"/>
+      <Button fx:id="btnDelete" layoutX="726.0" layoutY="460.0" mnemonicParsing="false" onAction="#delete"
+              prefHeight="25.0" prefWidth="134.0" text="Delete"/>
+
+   </children>
+</AnchorPane>

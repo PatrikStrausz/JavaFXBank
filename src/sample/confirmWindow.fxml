@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="207.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/10.0.2-internal"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.DeleteAccount">
+    <children>
+        <Label alignment="CENTER" contentDisplay="CENTER" layoutX="26.0" layoutY="32.0" prefHeight="17.0"
+               prefWidth="151.0" text="Are you sure?">
+            <font>
+                <Font size="18.0"/>
+            </font>
+        </Label>
+        <Button fx:id="btnDelete" layoutX="26.0" layoutY="150.0" mnemonicParsing="false" onAction="#deleteAccount"
+                text="Delete"/>
+        <Button fx:id="btnCancelDelete" layoutX="125.0" layoutY="150.0" mnemonicParsing="false"
+                onAction="#closeDeleteWindow" text="Cancel"/>
+    </children>
+</AnchorPane>

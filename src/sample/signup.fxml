@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="270.0" prefWidth="250.0" xmlns="http://javafx.com/javafx/10.0.2-internal"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Signup">
+    <children>
+        <TextField fx:id="txtFname" layoutX="42.0" layoutY="72.0" onKeyReleased="#handleKeyReleased" prefHeight="25.0"
+                   prefWidth="166.0" promptText="Firstname:"/>
+        <TextField fx:id="txtLname" layoutX="42.0" layoutY="107.0" onKeyReleased="#handleKeyReleased" prefHeight="25.0"
+                   prefWidth="166.0" promptText="Lastname:"/>
+        <TextField fx:id="txtLogin" layoutX="42.0" layoutY="142.0" onKeyReleased="#handleKeyReleased" prefHeight="25.0"
+                   prefWidth="166.0" promptText="Login:"/>
+        <PasswordField fx:id="pwdPassword" layoutX="42.0" layoutY="178.0" onKeyPressed="#handleKeyReleased"
+                       prefHeight="25.0" prefWidth="166.0" promptText="Password:"/>
+        <Label layoutX="96.0" layoutY="14.0" text="Signup">
+            <font>
+                <Font name="Bell MT" size="20.0"/>
+            </font>
+        </Label>
+        <Label fx:id="lblError" layoutX="42.0" layoutY="48.0" textFill="#f50000">
+            <font>
+                <Font size="15.0"/>
+            </font>
+        </Label>
+        <Button fx:id="btnSignup" layoutX="99.0" layoutY="225.0" mnemonicParsing="false" onAction="#signup"
+                text="Signup"/>
+    </children>
+</AnchorPane>
