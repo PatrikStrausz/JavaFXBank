@@ -16,9 +16,12 @@ import org.json.JSONObject;
 import java.io.*;
 import java.net.HttpURLConnection;
 
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Timer;
 
 
 public class Controller {
@@ -31,6 +34,7 @@ public class Controller {
     public String token;
     public String lname;
     public String fname;
+    public Button btnSignup;
 
     public String getLoginss() {
         return loginss;
@@ -113,7 +117,9 @@ public class Controller {
 
             openNewWindow();
             closeLoginWindow();
-
+            is.close();
+            streamReader.close();
+            con.disconnect();
 
         } else {
             is = con.getErrorStream();
@@ -133,8 +139,14 @@ public class Controller {
             login.setText(" ");
             password.setText("");
             btnLogin.setDisable(true);
+            is.close();
+            streamReader.close();
+            con.disconnect();
 
         }
+
+        is.close();
+
 
         con.disconnect();
 
@@ -162,13 +174,33 @@ public class Controller {
             newWindow.setLogin(getLoginss());
             newWindow.getMessages();
 
+
             Stage stage = new Stage();
-            Scene scene = new Scene(root1, 900, 500);
+            Scene scene = new Scene(root1, 895, 500);
             stage.resizableProperty().setValue(Boolean.FALSE);
             stage.initStyle(StageStyle.UTILITY);
 
             stage.setScene(scene);
             stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void openSignup() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("signup.fxml"));
+            Parent root1 = loader.load();
+
+            Stage stage = new Stage();
+            Scene scene = new Scene(root1, 250, 270);
+            stage.resizableProperty().setValue(Boolean.FALSE);
+            stage.initStyle(StageStyle.UTILITY);
+
+            stage.setScene(scene);
+            stage.show();
+            Stage login = (Stage) btnSignup.getScene().getWindow();
+            login.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

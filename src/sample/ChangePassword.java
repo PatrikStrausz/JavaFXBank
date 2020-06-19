@@ -23,6 +23,7 @@ public class ChangePassword {
     public TextField newPassword1;
     public TextField newPassword2;
 
+
     public void setToken(String token){
         this.token = token;
 
@@ -88,7 +89,8 @@ public class ChangePassword {
                     lblError.setStyle("-fx-text-fill: #009900");
                     lblError.setText("Successfully changed");
 
-
+                    is.close();
+                    streamReader.close();
 
                 } else {
                     is = con.getErrorStream();
@@ -104,8 +106,10 @@ public class ChangePassword {
                     String ss = responseStrBuilder.toString().replaceAll("\\p{P}", "")
                             .replace("error", "");
                     lblError.setText(ss);
-
+                    is.close();
+                    streamReader.close();
                 }
+                is.close();
                 con.disconnect();
             } else{
                 lblError.setText("Password must match");
